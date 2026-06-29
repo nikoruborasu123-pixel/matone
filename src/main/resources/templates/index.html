@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MATONE</title>
+</head>
+
+<body>
+
+<h1>MATONE</h1>
+
+<p>
+    ようこそ、
+    <strong th:text="${loginUser.username}"></strong>
+    さん
+</p>
+
+<form action="/logout" method="post">
+    <button type="submit">
+        ログアウト
+    </button>
+</form>
+
+<form action="/send" method="post" enctype="multipart/form-data">
+
+    <p>名前</p>
+    <input type="text" name="name">
+
+    <p>メッセージ</p>
+    <input type="text" name="message">
+
+    <p>画像</p>
+    <input type="file" name="image">
+
+    <br><br>
+
+    <button type="submit">
+        送信
+    </button>
+</form>
+<h2>メッセージ一覧</h2>
+
+<div th:each="msg : ${messages}">
+    <p>
+        <strong th:text="${msg.name}"></strong>
+        :
+        <span th:text="${msg.message}"></span>
+        <br>
+
+        <img th:if="${msg.imageName != null}"
+             th:src="@{/uploads/{file}(file=${msg.imageName})}"
+             width="200">
+
+        <br>
+
+        <small th:text="${msg.createdAt}"></small>
+    </p>
+
+    <!--msg.id=5なら/delete/5というURLを作ってくれる-->
+    <form
+            th:if="${loginUser.username == msg.username}"
+            th:action="@{/delete/{id}(id=${msg.id})}"
+            method="post">
+
+        <button type="submit">削除</button>
+
+    </form>
+
+    <hr>
+
+</div>
+</body>
